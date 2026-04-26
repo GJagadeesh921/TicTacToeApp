@@ -25,11 +25,16 @@ public class TicTacToe {
         int row = getRowFromSlot(slot);
         int col = getColFromSlot(slot);
 
-        System.out.println("Row: " + row);
-        System.out.println("Column: " + col);
+        if (isValidMove(row, col)) {
+            System.out.println("Valid Move");
+            board[row][col] = humanSymbol;
+        } else {
+            System.out.println("Invalid Move");
+        }
+
+        printBoard();
     }
 
-    // UC1
     static void initializeBoard() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -44,7 +49,6 @@ public class TicTacToe {
         }
     }
 
-    // UC2
     static void tossAndAssignSymbols() {
         Random random = new Random();
         boolean toss = random.nextBoolean();
@@ -71,19 +75,28 @@ public class TicTacToe {
         System.out.println("Computer symbol: " + computerSymbol);
     }
 
-    // UC3
     static int getUserSlot() {
         System.out.print("Enter slot (1-9): ");
-        int slot = scanner.nextInt();
-        return slot;
+        return scanner.nextInt();
     }
 
-    // UC4
     static int getRowFromSlot(int slot) {
         return (slot - 1) / 3;
     }
 
     static int getColFromSlot(int slot) {
         return (slot - 1) % 3;
+    }
+
+    static boolean isValidMove(int row, int col) {
+        if (row < 0 || row > 2 || col < 0 || col > 2) {
+            return false;
+        }
+
+        if (board[row][col] != '-') {
+            return false;
+        }
+
+        return true;
     }
 }
