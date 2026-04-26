@@ -27,10 +27,11 @@ public class TicTacToe {
 
         if (isValidMove(row, col)) {
             placeMove(row, col, humanSymbol);
-            System.out.println("Move placed");
         } else {
             System.out.println("Invalid Move");
         }
+
+        computerMove();
 
         printBoard();
     }
@@ -102,5 +103,22 @@ public class TicTacToe {
 
     static void placeMove(int row, int col, char symbol) {
         board[row][col] = symbol;
+    }
+
+    static void computerMove() {
+        Random random = new Random();
+
+        while (true) {
+            int slot = random.nextInt(9) + 1;
+
+            int row = getRowFromSlot(slot);
+            int col = getColFromSlot(slot);
+
+            if (isValidMove(row, col)) {
+                placeMove(row, col, computerSymbol);
+                System.out.println("Computer placed at slot: " + slot);
+                break;
+            }
+        }
     }
 }
