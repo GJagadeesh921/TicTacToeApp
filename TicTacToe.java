@@ -6,6 +6,8 @@ public class TicTacToe {
     static char[][] board = new char[3][3];
 
     static boolean isHumanTurn;
+    static boolean gameOver = false;
+
     static char humanSymbol;
     static char computerSymbol;
 
@@ -18,22 +20,29 @@ public class TicTacToe {
         tossAndAssignSymbols();
         displayTossResult();
 
-        printBoard();
+        while (!gameOver) {
 
-        int slot = getUserSlot();
+            printBoard();
 
-        int row = getRowFromSlot(slot);
-        int col = getColFromSlot(slot);
+            if (isHumanTurn) {
 
-        if (isValidMove(row, col)) {
-            placeMove(row, col, humanSymbol);
-        } else {
-            System.out.println("Invalid Move");
+                int slot = getUserSlot();
+                int row = getRowFromSlot(slot);
+                int col = getColFromSlot(slot);
+
+                if (isValidMove(row, col)) {
+                    placeMove(row, col, humanSymbol);
+                    isHumanTurn = false;
+                } else {
+                    System.out.println("Invalid Move");
+                }
+
+            } else {
+
+                computerMove();
+                isHumanTurn = true;
+            }
         }
-
-        computerMove();
-
-        printBoard();
     }
 
     static void initializeBoard() {
@@ -48,6 +57,7 @@ public class TicTacToe {
         for (int i = 0; i < 3; i++) {
             System.out.println(board[i][0] + " | " + board[i][1] + " | " + board[i][2]);
         }
+        System.out.println();
     }
 
     static void tossAndAssignSymbols() {
@@ -67,13 +77,10 @@ public class TicTacToe {
 
     static void displayTossResult() {
         if (isHumanTurn) {
-            System.out.println("Human won the toss!");
+            System.out.println("Human starts");
         } else {
-            System.out.println("Computer won the toss!");
+            System.out.println("Computer starts");
         }
-
-        System.out.println("Human symbol: " + humanSymbol);
-        System.out.println("Computer symbol: " + computerSymbol);
     }
 
     static int getUserSlot() {
@@ -93,11 +100,9 @@ public class TicTacToe {
         if (row < 0 || row > 2 || col < 0 || col > 2) {
             return false;
         }
-
         if (board[row][col] != '-') {
             return false;
         }
-
         return true;
     }
 
