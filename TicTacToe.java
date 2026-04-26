@@ -26,8 +26,8 @@ public class TicTacToe {
         int col = getColFromSlot(slot);
 
         if (isValidMove(row, col)) {
-            System.out.println("Valid Move");
-            board[row][col] = humanSymbol;
+            placeMove(row, col, humanSymbol);
+            System.out.println("Move placed");
         } else {
             System.out.println("Invalid Move");
         }
@@ -98,5 +98,9 @@ public class TicTacToe {
         }
 
         return true;
+    }
+
+    static void placeMove(int row, int col, char symbol) {
+        board[row][col] = symbol;
     }
 }
