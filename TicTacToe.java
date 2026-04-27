@@ -1,129 +1,111 @@
-import java.util.Random;
 import java.util.Scanner;
+import java.util.Random;
 
 public class TicTacToe {
 
-    static char[][] board = new char[3][3];
+    static char[][] board = {
+        {'-', '-', '-'},
+        {'-', '-', '-'},
+        {'-', '-', '-'}
+    };
 
-    static boolean isHumanTurn;
-    static boolean gameOver = false;
-
-    static char humanSymbol;
-    static char computerSymbol;
-
-    static Scanner scanner = new Scanner(System.in);
+    static Scanner sc = new Scanner(System.in);
+    static Random rand = new Random();
 
     public static void main(String[] args) {
 
-        initializeBoard();
-
-        tossAndAssignSymbols();
-        displayTossResult();
-
-        while (!gameOver) {
+        while (true) {
 
             printBoard();
 
-            if (isHumanTurn) {
+            System.out.print("Enter slot (1-9): ");
+            int slot = sc.nextInt();
 
-                int slot = getUserSlot();
-                int row = getRowFromSlot(slot);
-                int col = getColFromSlot(slot);
-
-                if (isValidMove(row, col)) {
-                    placeMove(row, col, humanSymbol);
-                    isHumanTurn = false;
-                } else {
-                    System.out.println("Invalid Move");
-                }
-
-            } else {
-
-                computerMove();
-                isHumanTurn = true;
+            if (!isValidMove(slot)) {
+                System.out.println("Invalid move! Try again.");
+                continue;
             }
-        }
-    }
 
-    static void initializeBoard() {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                board[i][j] = '-';
+            placeMove(slot, 'X');
+
+            if (checkWin('X')) {
+                printBoard();
+                System.out.println("You win!");
+                break;
+            }
+
+            if (isBoardFull()) {
+                printBoard();
+                System.out.println("Draw!");
+                break;
+            }
+
+            int compSlot;
+            do {
+                compSlot = rand.nextInt(9) + 1;
+            } while (!isValidMove(compSlot));
+
+            System.out.println("Computer placed at slot: " + compSlot);
+            placeMove(compSlot, 'O');
+
+            if (checkWin('O')) {
+                printBoard();
+                System.out.println("Computer wins!");
+                break;
+            }
+
+            if (isBoardFull()) {
+                printBoard();
+                System.out.println("Draw!");
+                break;
             }
         }
     }
 
     static void printBoard() {
-        for (int i = 0; i < 3; i++) {
-            System.out.println(board[i][0] + " | " + board[i][1] + " | " + board[i][2]);
+        for (char[] row : board) {
+            System.out.println(row[0] + " | " + row[1] + " | " + row[2]);
         }
         System.out.println();
     }
 
-    static void tossAndAssignSymbols() {
-        Random random = new Random();
-        boolean toss = random.nextBoolean();
-
-        if (toss) {
-            isHumanTurn = true;
-            humanSymbol = 'X';
-            computerSymbol = 'O';
-        } else {
-            isHumanTurn = false;
-            humanSymbol = 'O';
-            computerSymbol = 'X';
-        }
+    static boolean isValidMove(int slot) {
+        int row = (slot - 1) / 3;
+        int col = (slot - 1) % 3;
+        return slot >= 1 && slot <= 9 && board[row][col] == '-';
     }
 
-    static void displayTossResult() {
-        if (isHumanTurn) {
-            System.out.println("Human starts");
-        } else {
-            System.out.println("Computer starts");
-        }
+    static void placeMove(int slot, char symbol) {
+        int row = (slot - 1) / 3;
+        int col = (slot - 1) % 3;
+        board[row][col] = symbol;
     }
 
-    static int getUserSlot() {
-        System.out.print("Enter slot (1-9): ");
-        return scanner.nextInt();
-    }
-
-    static int getRowFromSlot(int slot) {
-        return (slot - 1) / 3;
-    }
-
-    static int getColFromSlot(int slot) {
-        return (slot - 1) % 3;
-    }
-
-    static boolean isValidMove(int row, int col) {
-        if (row < 0 || row > 2 || col < 0 || col > 2) {
-            return false;
-        }
-        if (board[row][col] != '-') {
-            return false;
+    static boolean isBoardFull() {
+        for (char[] row : board) {
+            for (char cell : row) {
+                if (cell == '-') return false;
+            }
         }
         return true;
     }
 
-    static void placeMove(int row, int col, char symbol) {
-        board[row][col] = symbol;
-    }
+    static boolean checkWin(char symbol) {
 
-    static void computerMove() {
-        Random random = new Random();
+        for (int i = 0; i < 3; i++) {
+            if (board[i][0] == symbol && board[i][1] == symbol && board[i][2] == symbol)
+                return true;
 
-        while (true) {
-            int slot = random.nextInt(9) + 1;
-
-            int row = getRowFromSlot(slot);
-            int col = getColFromSlot(slot);
-
-            if (isValidMove(row, col)) {
-                placeMove(row, col, computerSymbol);
-                System.out.println("Computer placed at slot: " + slot);
-                break;
-            }
+            if (board[0][i] == symbol && board[1][i] == symbol && board[2][i] == symbol)
+                return true;
         }
+
+        if (board[0][0] == symbol && board[1][1] == symbol && board[2][2] == symbol)
+            return true;
+
+        if (board[0][2] == symbol && board[1][1] == symbol && board[2][0] == symbol)
+            return true;
+
+        return false;
     }
 }
