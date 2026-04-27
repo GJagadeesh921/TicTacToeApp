@@ -34,7 +34,7 @@ public class TicTacToe {
                 break;
             }
 
-            if (isBoardFull()) {
+            if (isDraw()) {
                 printBoard();
                 System.out.println("Draw!");
                 break;
@@ -54,7 +54,7 @@ public class TicTacToe {
                 break;
             }
 
-            if (isBoardFull()) {
+            if (isDraw()) {
                 printBoard();
                 System.out.println("Draw!");
                 break;
@@ -81,10 +81,12 @@ public class TicTacToe {
         board[row][col] = symbol;
     }
 
-    static boolean isBoardFull() {
-        for (char[] row : board) {
-            for (char cell : row) {
-                if (cell == '-') return false;
+    static boolean isDraw() {
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                if (board[r][c] == '-') {
+                    return false;
+                }
             }
         }
         return true;
